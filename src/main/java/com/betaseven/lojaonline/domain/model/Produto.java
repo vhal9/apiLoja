@@ -16,7 +16,7 @@ public class Produto {
     private Long idProduto;
     private String nome;
     private Double preco;
-    private int quantidade;
+    private Long quantidade;
 
     public Produto(Long idProduto) {
         this.idProduto = idProduto;
