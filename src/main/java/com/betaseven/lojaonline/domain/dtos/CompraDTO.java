@@ -33,5 +33,6 @@ public class CompraDTO {
 
     public LocalDateTime dataCompra;
 
-    public LocalDateTime dataProcessamento;
+    public LocalDateTime dataInicioProcessamento;
+    public LocalDateTime dataFimProcessamento;
 }
