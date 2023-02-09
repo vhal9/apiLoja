@@ -10,7 +10,8 @@ public enum StatusCompraEnum {
     EMPROCESSAMENTO("EmProcessamento"),
     REALIZADA("Realizada"),
     NEGADA("Negada"),
-    CANCELADA("Cancelada");
+    CANCELADA("Cancelada"),
+    ERRO("Erro");
 
     private final String status;
 }
