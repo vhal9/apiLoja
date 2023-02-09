@@ -26,13 +26,16 @@ public class Compra {
     @Transient
     private List<ItemCompra> itensCompra;
 
+    @Enumerated(EnumType.STRING)
     private StatusCompraEnum statusCompra;
 
     private Double total;
 
     private LocalDateTime dataCompra;
 
-    private LocalDateTime dataProcessamento;
+    private LocalDateTime dataInicioProcessamento;
+
+    private LocalDateTime dataFimProcessamento;
 
 
 }
