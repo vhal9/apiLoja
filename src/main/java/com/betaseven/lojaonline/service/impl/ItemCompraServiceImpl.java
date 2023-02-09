@@ -7,8 +7,8 @@ import com.betaseven.lojaonline.domain.model.ItemCompra;
 import com.betaseven.lojaonline.repositories.ItemCompraRepository;
 import com.betaseven.lojaonline.service.ItemCompraService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class ItemCompraServiceImpl implements ItemCompraService {
 
     private final ItemCompraRepository itemCompraRepository;
     private final ItemCompraMapper itemCompraMapper;
-    private final Logger logger = LoggerFactory.getLogger(ItemCompraServiceImpl.class);
+    private static Logger logger = LogManager.getLogger(ItemCompraServiceImpl.class);
 
     @Override
     public void salvarItensCompra(List<ItemDTO> itens, Compra compra) throws Exception {

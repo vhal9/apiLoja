@@ -10,8 +10,8 @@ import com.betaseven.lojaonline.service.ClienteService;
 import com.betaseven.lojaonline.service.CompraService;
 import com.betaseven.lojaonline.service.ItemCompraService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,7 @@ public class CompraServiceImpl implements CompraService {
     private final ClienteService clienteService;
     private final ItemCompraService itemCompraService;
     private final CompraDTOMapper compraDTOMapper;
-    private final Logger logger = LoggerFactory.getLogger(CompraServiceImpl.class);
+    private static Logger logger = LogManager.getLogger(CompraServiceImpl.class);
 
 
     @Override

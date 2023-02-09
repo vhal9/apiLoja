@@ -3,8 +3,9 @@ package com.betaseven.lojaonline.service.impl;
 import com.betaseven.lojaonline.domain.model.Cliente;
 import com.betaseven.lojaonline.repositories.ClienteRepository;
 import com.betaseven.lojaonline.service.ClienteService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @Service
 public class ClienteServiceImpl implements ClienteService {
     private final ClienteRepository clienteRepository;
-    private final Logger logger = LoggerFactory.getLogger(ClienteServiceImpl.class);
+    private static Logger logger = LogManager.getLogger(ClienteServiceImpl.class);
 
     public ClienteServiceImpl(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;

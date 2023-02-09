@@ -4,8 +4,8 @@ import com.betaseven.lojaonline.domain.dtos.CompraDTO;
 import com.betaseven.lojaonline.service.CompraService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class CompraController {
 
     private final CompraService compraService;
-    private final Logger logger = LoggerFactory.getLogger(CompraController.class);
+    private static Logger logger = LogManager.getLogger(CompraController.class);
 
     @GetMapping("{id}")
     public ResponseEntity<CompraDTO> buscarCompra(@PathVariable(value = "id") Long idCompra) {
