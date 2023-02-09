@@ -20,7 +20,7 @@ public class ItemCompraServiceImpl implements ItemCompraService {
 
     private final ItemCompraRepository itemCompraRepository;
     private final ItemCompraMapper itemCompraMapper;
-    private static Logger logger = LogManager.getLogger(ItemCompraServiceImpl.class);
+    private final Logger logger = LogManager.getLogger(ItemCompraServiceImpl.class);
 
     @Override
     public void salvarItensCompra(List<ItemDTO> itens, Compra compra) throws Exception {
@@ -36,5 +36,10 @@ public class ItemCompraServiceImpl implements ItemCompraService {
             throw new Exception("Nao foi possivel salvar os itens da compra");
         }
 
+    }
+
+    @Override
+    public List<ItemCompra> buscarItensDaCompra(Compra compra) {
+        return itemCompraRepository.findAllByCompra(compra);
     }
 }

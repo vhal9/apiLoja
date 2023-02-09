@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -27,7 +28,7 @@ public class CompraServiceImpl implements CompraService {
     private final ClienteService clienteService;
     private final ItemCompraService itemCompraService;
     private final CompraDTOMapper compraDTOMapper;
-    private static Logger logger = LogManager.getLogger(CompraServiceImpl.class);
+    private final Logger logger = LogManager.getLogger(CompraServiceImpl.class);
 
 
     @Override
@@ -63,6 +64,39 @@ public class CompraServiceImpl implements CompraService {
             return compraDTOMapper.execute(optionalCompra.get());
         }
         throw new Exception("Compra nao encontrada para o id: " + idCompra);
+    }
+
+    @Override
+    @Transactional
+    public List<Compra> buscarComprasPendentes() {
+        return compraRepository.findAllByStatusCompraOrderByDataCompraAsc(StatusCompraEnum.PENDENTE);
+    }
+
+    @Override
+    @Transactional
+    public void iniciarProcessamentoDaCompra(Long idCompra) {
+        compraRepository.iniciarProcessamentoDaCompra(idCompra, StatusCompraEnum.EMPROCESSAMENTO, LocalDateTime.now());
+    }
+
+    @Override
+    @Transactional
+    public void finalizarProcessamentoDaCompra(Long idCompra) {
+        logger.info("Finalizaneto processamento da compra " + idCompra);
+        compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.REALIZADA, LocalDateTime.now());
+    }
+
+    @Override
+    @Transactional
+    public void finalizarProcessamentoDaCompraNegada(Long idCompra) {
+        logger.info("Finalizaneto processamento da compra com erro: " + idCompra);
+        compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.NEGADA, LocalDateTime.now());
+    }
+
+    @Override
+    @Transactional
+    public void finalizarProcessamentoDaCompraComErro(Long idCompra) {
+        logger.info("Finalizaneto processamento da compra com erro: " + idCompra);
+        compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.ERRO, LocalDateTime.now());
     }
 
 }

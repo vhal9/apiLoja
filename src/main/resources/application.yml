@@ -12,3 +12,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+
+cron:
+  processamento:
+    compra:
+      pendente: 0 0/1 * * * *
