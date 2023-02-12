@@ -3,17 +3,3 @@ server:
   port: 8081
   servlet:
     contextPath: /lojaonline
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/Loja
-    username: postgres
-    password:
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-
-cron:
-  processamento:
-    compra:
-      pendente: 0 0/1 * * * *
