@@ -1,10 +1,12 @@
 package com.betaseven.lojaonline.domain.model;
 
+import com.betaseven.lojaonline.domain.Enum.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
@@ -30,15 +32,14 @@ public class Usuario implements UserDetails, Serializable {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
-    @JoinTable(name = "TB_USERS_ROLES",
-                joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        if(this.role == Role.ADMIN)
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
@@ -59,5 +60,11 @@ public class Usuario implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Usuario(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 }

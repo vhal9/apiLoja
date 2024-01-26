@@ -3,3 +3,10 @@ server:
   port: 8081
   servlet:
     contextPath: /lojaonline
+
+api:
+  security:
+    token:
+      secret: teste
+    session:
+      time: 2
