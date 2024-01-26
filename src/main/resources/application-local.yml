@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Loja
+    username: postgres
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+processamento:
+  compra:
+    pendente:
+      cron: 0 0/1 * * * *
+      zone: America/Sao_Paulo
+
