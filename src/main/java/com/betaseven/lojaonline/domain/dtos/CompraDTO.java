@@ -20,19 +20,14 @@ import java.util.List;
 public class CompraDTO {
     public Long idCompra;
 
-    @NotNull
+    @NotNull(message = "Necessario informar o cliente")
     public Long idCliente;
 
-    @NotEmpty
     @Valid
     public List<ItemDTO> itens;
-
     public StatusCompraEnum statusCompra;
-
     public Double total;
-
     public LocalDateTime dataCompra;
-
     public LocalDateTime dataInicioProcessamento;
     public LocalDateTime dataFimProcessamento;
 }
