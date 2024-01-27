@@ -1,5 +1,6 @@
 package com.betaseven.lojaonline.service.impl;
 
+import com.betaseven.lojaonline.Exceptions.CompraNotFoundException;
 import com.betaseven.lojaonline.domain.Enum.StatusCompraEnum;
 import com.betaseven.lojaonline.domain.dtos.CompraDTO;
 import com.betaseven.lojaonline.domain.mappers.CompraDTOMapper;
@@ -47,29 +48,30 @@ public class CompraServiceImpl implements CompraService {
             Compra compraSalva = compraRepository.save(compra);
             logger.info("Compra inserida com id: " + compraSalva.getIdCompra());
 
-            logger.info("Inserindo os itens da compra");
-            itemCompraService.salvarItensCompra(compraDTO.itens, compraSalva);
-
+            if (!compraDTO.getItens().isEmpty()) {
+                logger.info("Inserindo os itens da compra");
+                itemCompraService.salvarItensCompra(compraDTO.getItens(), compraSalva);
+            }
             return compraDTOMapper.execute(compraSalva);
         } catch (Exception e) {
-            logger.error("Erro ao tentar salvar uma nova compra", e);
-            throw e;
+            logger.error("Erro ao tentar salvar uma nova compra " + compraDTO, e);
+            throw new RuntimeException("Erro ao tentar salvar uma nova compra " + compraDTO);
         }
     }
 
     @Override
-    public CompraDTO buscarCompra(Long idCompra) throws Exception {
+    public CompraDTO buscarCompra(Long idCompra) {
         Optional<Compra> optionalCompra = compraRepository.findById(idCompra);
         if (optionalCompra.isPresent()) {
             return compraDTOMapper.execute(optionalCompra.get());
         }
-        throw new Exception("Compra nao encontrada para o id: " + idCompra);
+        throw new CompraNotFoundException("Compra nao encontrada para o id: " + idCompra);
     }
 
     @Override
     @Transactional
-    public List<Compra> buscarComprasPendentes() {
-        return compraRepository.findAllByStatusCompraOrderByDataCompraAsc(StatusCompraEnum.PENDENTE);
+    public List<Compra> buscarComprasPorStatus(StatusCompraEnum statusCompraEnum) {
+        return compraRepository.findAllByStatusCompraOrderByDataCompraAsc(statusCompraEnum);
     }
 
     @Override
@@ -81,21 +83,21 @@ public class CompraServiceImpl implements CompraService {
     @Override
     @Transactional
     public void finalizarProcessamentoDaCompra(Long idCompra) {
-        logger.info("Finalizaneto processamento da compra " + idCompra);
+        logger.info("finalizarProcessamentoDaCompra - idCompra: " + idCompra);
         compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.REALIZADA, LocalDateTime.now());
     }
 
     @Override
     @Transactional
     public void finalizarProcessamentoDaCompraNegada(Long idCompra) {
-        logger.info("Finalizaneto processamento da compra com erro: " + idCompra);
+        logger.info("finalizarProcessamentoDaCompraNegada - idCompra: " + idCompra);
         compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.NEGADA, LocalDateTime.now());
     }
 
     @Override
     @Transactional
     public void finalizarProcessamentoDaCompraComErro(Long idCompra) {
-        logger.info("Finalizaneto processamento da compra com erro: " + idCompra);
+        logger.info("finalizarProcessamentoDaCompraComErro - idCompra: " + idCompra);
         compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.ERRO, LocalDateTime.now());
     }
 

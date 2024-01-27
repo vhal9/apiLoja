@@ -10,24 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("compra")
 @RequiredArgsConstructor
 public class CompraController {
 
     private final CompraService compraService;
-    private static Logger logger = LogManager.getLogger(CompraController.class);
+    private final static Logger logger = LogManager.getLogger(CompraController.class);
 
     @GetMapping("{id}")
-    public ResponseEntity<CompraDTO> buscarCompra(@PathVariable(value = "id") Long idCompra) {
-        try {
-            return new ResponseEntity<>(compraService.buscarCompra(idCompra), HttpStatus.ACCEPTED);
-        }
-        catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-
+    public ResponseEntity<CompraDTO> buscarCompra(@PathVariable(value = "id") Long idCompra) throws Exception {
+        return new ResponseEntity<>(compraService.buscarCompra(idCompra), HttpStatus.ACCEPTED);
     }
 
     @PostMapping
@@ -35,10 +28,9 @@ public class CompraController {
         try {
             logger.info("Inserindo compra para o cliente " + novaCompra.idCliente);
             return new ResponseEntity<>(compraService.inserirCompra(novaCompra), HttpStatus.CREATED);
-
         } catch (Exception e ){
-            logger.info("Erro ao inserir compra");
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            logger.info("Erro executando inserirCompra: " + novaCompra);
+            throw new RuntimeException("Erro executando inserirCompra: " + novaCompra);
         }
 
     }
