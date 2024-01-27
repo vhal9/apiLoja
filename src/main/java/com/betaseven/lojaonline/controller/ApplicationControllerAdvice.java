@@ -5,6 +5,8 @@ import com.betaseven.lojaonline.domain.dtos.erros.RestErrorMessageDTO;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -46,4 +48,12 @@ public class ApplicationControllerAdvice {
         return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
     }
 
+    @ExceptionHandler(DisabledException.class)
+    private ResponseEntity<RestErrorMessageDTO> usernameNotFoundExceptionHandler(DisabledException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
 }
