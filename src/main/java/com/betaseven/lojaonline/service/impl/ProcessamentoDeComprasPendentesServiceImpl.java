@@ -1,5 +1,6 @@
 package com.betaseven.lojaonline.service.impl;
 
+import com.betaseven.lojaonline.domain.Enum.StatusCompraEnum;
 import com.betaseven.lojaonline.domain.model.Compra;
 import com.betaseven.lojaonline.domain.model.ItemCompra;
 import com.betaseven.lojaonline.service.CompraService;
@@ -27,7 +28,7 @@ public class ProcessamentoDeComprasPendentesServiceImpl implements Processamento
     public void process() {
         //buscar compras pendentes
         logger.info("Buscando compras pendentes");
-        List<Compra> comprasPendentes = compraService.buscarComprasPendentes();
+        List<Compra> comprasPendentes = compraService.buscarComprasPorStatus(StatusCompraEnum.PENDENTE);
 
         comprasPendentes.forEach(this::processarCompra);
 
