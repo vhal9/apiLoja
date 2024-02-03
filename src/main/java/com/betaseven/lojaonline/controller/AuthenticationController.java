@@ -1,6 +1,7 @@
 package com.betaseven.lojaonline.controller;
 
 import com.betaseven.lojaonline.config.security.TokenService;
+import com.betaseven.lojaonline.Exceptions.ExistingUsernameException;
 import com.betaseven.lojaonline.domain.dtos.AuthenticationDTO;
 import com.betaseven.lojaonline.domain.dtos.LoginResponseDTO;
 import com.betaseven.lojaonline.domain.dtos.RegisterDTO;
@@ -47,7 +48,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO) {
         if (usuarioRepository.findByUsername(registerDTO.getLogin()) != null )
-            return ResponseEntity.badRequest().build();
+            throw new ExistingUsernameException();
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.getPassword());
         Usuario novoUsuario = new Usuario(registerDTO.getLogin(), encryptedPassword, registerDTO.getRole());
 
