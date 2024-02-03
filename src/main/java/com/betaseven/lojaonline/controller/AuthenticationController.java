@@ -1,7 +1,7 @@
 package com.betaseven.lojaonline.controller;
 
-import com.betaseven.lojaonline.config.security.TokenService;
 import com.betaseven.lojaonline.Exceptions.ExistingUsernameException;
+import com.betaseven.lojaonline.service.impl.TokenServiceImpl;
 import com.betaseven.lojaonline.domain.dtos.AuthenticationDTO;
 import com.betaseven.lojaonline.domain.dtos.LoginResponseDTO;
 import com.betaseven.lojaonline.domain.dtos.RegisterDTO;
@@ -27,9 +27,9 @@ public class AuthenticationController {
 
     final private UsuarioRepository usuarioRepository;
 
-    final private TokenService tokenService;
+    final private TokenServiceImpl tokenService;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenService tokenService) {
+    public AuthenticationController(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenServiceImpl tokenService) {
         this.authenticationManager = authenticationManager;
         this.usuarioRepository = usuarioRepository;
         this.tokenService = tokenService;

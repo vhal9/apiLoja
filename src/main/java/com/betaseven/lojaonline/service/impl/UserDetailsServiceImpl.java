@@ -1,4 +1,4 @@
-package com.betaseven.lojaonline.config.security;
+package com.betaseven.lojaonline.service.impl;
 
 import com.betaseven.lojaonline.repositories.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
