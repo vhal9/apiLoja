@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -60,7 +61,7 @@ public class CompraServiceImpl implements CompraService {
     }
 
     @Override
-    public CompraDTO buscarCompra(Long idCompra) {
+    public CompraDTO buscarCompra(UUID idCompra) {
         Optional<Compra> optionalCompra = compraRepository.findById(idCompra);
         if (optionalCompra.isPresent()) {
             return compraDTOMapper.execute(optionalCompra.get());
@@ -76,27 +77,27 @@ public class CompraServiceImpl implements CompraService {
 
     @Override
     @Transactional
-    public void iniciarProcessamentoDaCompra(Long idCompra) {
+    public void iniciarProcessamentoDaCompra(UUID idCompra) {
         compraRepository.iniciarProcessamentoDaCompra(idCompra, StatusCompraEnum.EMPROCESSAMENTO, LocalDateTime.now());
     }
 
     @Override
     @Transactional
-    public void finalizarProcessamentoDaCompra(Long idCompra) {
+    public void finalizarProcessamentoDaCompra(UUID idCompra) {
         logger.info("finalizarProcessamentoDaCompra - idCompra: " + idCompra);
         compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.REALIZADA, LocalDateTime.now());
     }
 
     @Override
     @Transactional
-    public void finalizarProcessamentoDaCompraNegada(Long idCompra) {
+    public void finalizarProcessamentoDaCompraNegada(UUID idCompra) {
         logger.info("finalizarProcessamentoDaCompraNegada - idCompra: " + idCompra);
         compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.NEGADA, LocalDateTime.now());
     }
 
     @Override
     @Transactional
-    public void finalizarProcessamentoDaCompraComErro(Long idCompra) {
+    public void finalizarProcessamentoDaCompraComErro(UUID idCompra) {
         logger.info("finalizarProcessamentoDaCompraComErro - idCompra: " + idCompra);
         compraRepository.finalizarProcessamentoDaCompra(idCompra, StatusCompraEnum.ERRO, LocalDateTime.now());
     }

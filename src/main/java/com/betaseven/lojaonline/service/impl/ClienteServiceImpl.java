@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -21,12 +22,12 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Cliente buscarCliente(Long idCliente) throws Exception {
-        logger.info("buscando cliente com id: " + idCliente);
-        Optional<Cliente> optionalClient = clienteRepository.findById(idCliente);
-        if (optionalClient.isEmpty()) {
-            throw new Exception("Cliente nao encontrado");
+    public Optional<Cliente> buscarCliente(UUID idCliente) {
+        try {
+            return clienteRepository.findById(idCliente);
+        } catch (Exception e) {
+            logger.error("Erro executando buscarCliente: " + idCliente, e);
+            throw e;
         }
-        return optionalClient.get();
     }
 }
