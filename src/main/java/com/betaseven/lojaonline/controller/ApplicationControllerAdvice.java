@@ -1,10 +1,17 @@
 package com.betaseven.lojaonline.controller;
 
+import com.betaseven.lojaonline.Exceptions.ClienteNotFoundException;
 import com.betaseven.lojaonline.Exceptions.CompraNotFoundException;
+import com.betaseven.lojaonline.Exceptions.ExistingUsernameException;
+import com.betaseven.lojaonline.Exceptions.UnauthorizedException;
 import com.betaseven.lojaonline.domain.dtos.erros.RestErrorMessageDTO;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -37,6 +44,68 @@ public class ApplicationControllerAdvice {
         return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    private ResponseEntity<RestErrorMessageDTO> authenticationExceptionHandler(AuthenticationException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.NOT_FOUND)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    private ResponseEntity<RestErrorMessageDTO> disabledExceptionHandler(DisabledException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    private ResponseEntity<RestErrorMessageDTO> usernameNotFoundExceptionHandler(UsernameNotFoundException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    private ResponseEntity<RestErrorMessageDTO> badCredentialsExceptionHandler() {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of("Credenciais Invalidas"))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+    @ExceptionHandler(ExistingUsernameException.class)
+    private ResponseEntity<RestErrorMessageDTO> existingUsernameExceptionHandler(ExistingUsernameException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+
+    @ExceptionHandler(ClienteNotFoundException.class)
+    private ResponseEntity<RestErrorMessageDTO> clienteNotFoundExceptionHandler(ClienteNotFoundException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    private ResponseEntity<RestErrorMessageDTO> unauthorizedExceptionHandler(ClienteNotFoundException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.UNAUTHORIZED)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     private ResponseEntity<RestErrorMessageDTO> runtimeExceptionHanlder(RuntimeException e) {
         RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
@@ -45,5 +114,4 @@ public class ApplicationControllerAdvice {
                 .build();
         return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
     }
-
 }

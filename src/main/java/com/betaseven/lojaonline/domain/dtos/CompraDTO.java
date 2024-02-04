@@ -3,7 +3,6 @@ package com.betaseven.lojaonline.domain.dtos;
 
 import com.betaseven.lojaonline.domain.Enum.StatusCompraEnum;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,22 +11,24 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompraDTO {
-    public Long idCompra;
+    private UUID idCompra;
 
     @NotNull(message = "Necessario informar o cliente")
-    public Long idCliente;
+    private UUID idCliente;
 
     @Valid
-    public List<ItemDTO> itens;
-    public StatusCompraEnum statusCompra;
-    public Double total;
-    public LocalDateTime dataCompra;
-    public LocalDateTime dataInicioProcessamento;
-    public LocalDateTime dataFimProcessamento;
+    private List<ItemDTO> itens;
+    private UUID idUsuario;
+    private StatusCompraEnum statusCompra;
+    private Double total;
+    private LocalDateTime dataCompra;
+    private LocalDateTime dataInicioProcessamento;
+    private LocalDateTime dataFimProcessamento;
 }

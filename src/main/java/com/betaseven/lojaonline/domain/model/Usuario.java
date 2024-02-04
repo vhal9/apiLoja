@@ -1,6 +1,7 @@
 package com.betaseven.lojaonline.domain.model;
 
 import com.betaseven.lojaonline.domain.Enum.Role;
+import com.betaseven.lojaonline.domain.Enum.StatusUsuarioEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +36,9 @@ public class Usuario implements UserDetails, Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.ORDINAL)
+    private StatusUsuarioEnum status;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == Role.ADMIN)
@@ -59,7 +63,9 @@ public class Usuario implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        if(this.status == StatusUsuarioEnum.HABILITADO)
+            return true;
+        return false;
     }
 
     public Usuario(String username, String password, Role role) {

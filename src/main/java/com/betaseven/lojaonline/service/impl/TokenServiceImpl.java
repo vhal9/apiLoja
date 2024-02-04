@@ -1,11 +1,13 @@
-package com.betaseven.lojaonline.config.security;
+package com.betaseven.lojaonline.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.betaseven.lojaonline.domain.model.Usuario;
+import com.betaseven.lojaonline.service.TokenService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 @Service
-public class TokenService {
+public class TokenServiceImpl implements TokenService {
 
     @Value("${api.security.token.secret:jwt}")
     private String secret;
@@ -22,12 +24,17 @@ public class TokenService {
     private Long sessionTime;
 
     final private String EMISSOR = "auth-api";
+
+    @Override
     public String generateToken(Usuario usuario) {
         try {
+            Usuario userLogin = new Usuario();
+            userLogin.setId(usuario.getId());
+            userLogin.setUsername(usuario.getUsername());
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer(EMISSOR)
-                    .withSubject(usuario.getUsername())
+                    .withSubject(userLogin.getUsername())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;
@@ -36,7 +43,8 @@ public class TokenService {
         }
     }
 
-    public String validateToken(String token) {
+    @Override
+    public String getSubjectFromToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -47,6 +55,12 @@ public class TokenService {
         } catch (JWTVerificationException e) {
             return "";
         }
+    }
+
+    @Override
+    public Usuario getUsuarioFromSession() {
+        Usuario usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return usuarioLogado;
     }
 
     private Instant genExpirationDate () {

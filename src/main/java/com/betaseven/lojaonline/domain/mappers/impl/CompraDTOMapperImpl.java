@@ -15,6 +15,7 @@ public class CompraDTOMapperImpl implements CompraDTOMapper {
         return CompraDTO.builder()
                 .idCompra(compra.getIdCompra())
                 .idCliente(compra.getCliente().getIdCliente())
+                .idUsuario(compra.getUsuario().getId())
                 .dataCompra(compra.getDataCompra())
                 .statusCompra(compra.getStatusCompra())
                 .dataInicioProcessamento(compra.getDataInicioProcessamento())

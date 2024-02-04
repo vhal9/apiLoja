@@ -1,10 +1,12 @@
-package com.betaseven.lojaonline.config.security;
+package com.betaseven.lojaonline.service.impl;
 
 import com.betaseven.lojaonline.repositories.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -16,6 +18,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByUsername(username);
+        Optional<UserDetails> optionalUserDetails =  usuarioRepository.findByUsername(username);
+        if (optionalUserDetails.isEmpty())
+            throw new UsernameNotFoundException("Credenciais Invalidas");
+        return optionalUserDetails.get();
     }
 }

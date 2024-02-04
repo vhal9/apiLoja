@@ -1,12 +1,14 @@
 package com.betaseven.lojaonline.controller;
 
-import com.betaseven.lojaonline.config.security.TokenService;
+import com.betaseven.lojaonline.Exceptions.ExistingUsernameException;
+import com.betaseven.lojaonline.service.impl.TokenServiceImpl;
 import com.betaseven.lojaonline.domain.dtos.AuthenticationDTO;
 import com.betaseven.lojaonline.domain.dtos.LoginResponseDTO;
 import com.betaseven.lojaonline.domain.dtos.RegisterDTO;
 import com.betaseven.lojaonline.domain.model.Usuario;
 import com.betaseven.lojaonline.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,9 +28,9 @@ public class AuthenticationController {
 
     final private UsuarioRepository usuarioRepository;
 
-    final private TokenService tokenService;
+    final private TokenServiceImpl tokenService;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenService tokenService) {
+    public AuthenticationController(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository, TokenServiceImpl tokenService) {
         this.authenticationManager = authenticationManager;
         this.usuarioRepository = usuarioRepository;
         this.tokenService = tokenService;
@@ -46,14 +48,13 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO) {
-        if (usuarioRepository.findByUsername(registerDTO.getLogin()) != null )
-            return ResponseEntity.badRequest().build();
+        if (usuarioRepository.findByUsername(registerDTO.getLogin()).isPresent())
+            throw new ExistingUsernameException();
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.getPassword());
         Usuario novoUsuario = new Usuario(registerDTO.getLogin(), encryptedPassword, registerDTO.getRole());
 
         this.usuarioRepository.save(novoUsuario);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
 }
