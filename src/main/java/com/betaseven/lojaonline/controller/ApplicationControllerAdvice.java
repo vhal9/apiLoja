@@ -8,6 +8,7 @@ import com.betaseven.lojaonline.domain.dtos.erros.RestErrorMessageDTO;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -70,8 +71,16 @@ public class ApplicationControllerAdvice {
         return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    private ResponseEntity<RestErrorMessageDTO> badCredentialsExceptionHandler() {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of("Credenciais Invalidas"))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
     @ExceptionHandler(ExistingUsernameException.class)
-    private ResponseEntity<RestErrorMessageDTO> existingUsernameException(ExistingUsernameException e) {
+    private ResponseEntity<RestErrorMessageDTO> existingUsernameExceptionHandler(ExistingUsernameException e) {
         RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .messages(List.of(e.getMessage()))

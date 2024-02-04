@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.betaseven.lojaonline.domain.model.Usuario;
 import com.betaseven.lojaonline.service.TokenService;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,13 +31,10 @@ public class TokenServiceImpl implements TokenService {
             Usuario userLogin = new Usuario();
             userLogin.setId(usuario.getId());
             userLogin.setUsername(usuario.getUsername());
-
-            Gson gson = new Gson();
-            gson.toJson(userLogin);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer(EMISSOR)
-                    .withSubject(gson.toJson(userLogin))
+                    .withSubject(userLogin.getUsername())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;
@@ -59,12 +55,6 @@ public class TokenServiceImpl implements TokenService {
         } catch (JWTVerificationException e) {
             return "";
         }
-    }
-
-    @Override
-    public Usuario getUsuarioFromToken(String token) {
-        Gson gson = new Gson();
-        return gson.fromJson(getSubjectFromToken(token), Usuario.class);
     }
 
     @Override

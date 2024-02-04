@@ -8,6 +8,7 @@ import com.betaseven.lojaonline.domain.dtos.RegisterDTO;
 import com.betaseven.lojaonline.domain.model.Usuario;
 import com.betaseven.lojaonline.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,14 +48,13 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO) {
-        if (usuarioRepository.findByUsername(registerDTO.getLogin()) != null )
+        if (usuarioRepository.findByUsername(registerDTO.getLogin()).isPresent())
             throw new ExistingUsernameException();
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.getPassword());
         Usuario novoUsuario = new Usuario(registerDTO.getLogin(), encryptedPassword, registerDTO.getRole());
 
         this.usuarioRepository.save(novoUsuario);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
 }
