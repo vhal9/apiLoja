@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Compra {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_compra", nullable = false)
     private UUID idCompra;
 
@@ -41,6 +41,4 @@ public class Compra {
     private LocalDateTime dataInicioProcessamento;
 
     private LocalDateTime dataFimProcessamento;
-
-
 }

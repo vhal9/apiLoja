@@ -1,9 +1,6 @@
 package com.betaseven.lojaonline.controller;
 
-import com.betaseven.lojaonline.Exceptions.ClienteNotFoundException;
-import com.betaseven.lojaonline.Exceptions.CompraNotFoundException;
-import com.betaseven.lojaonline.Exceptions.ExistingUsernameException;
-import com.betaseven.lojaonline.Exceptions.UnauthorizedException;
+import com.betaseven.lojaonline.Exceptions.*;
 import com.betaseven.lojaonline.domain.dtos.erros.RestErrorMessageDTO;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -90,6 +87,15 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(ClienteNotFoundException.class)
     private ResponseEntity<RestErrorMessageDTO> clienteNotFoundExceptionHandler(ClienteNotFoundException e) {
+        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .messages(List.of(e.getMessage()))
+                .build();
+        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+    }
+
+    @ExceptionHandler(ClienteExistenteException.class)
+    private ResponseEntity<RestErrorMessageDTO> clienteExistenteExceptionHandler(ClienteExistenteException e) {
         RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .messages(List.of(e.getMessage()))
