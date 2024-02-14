@@ -25,98 +25,82 @@ public class ApplicationControllerAdvice {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .messages(erros)
-                .status(HttpStatus.BAD_REQUEST)
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerBadRequest(erros);
     }
 
     @ExceptionHandler(CompraNotFoundException.class)
     private ResponseEntity<RestErrorMessageDTO> compraNotFoundExceptionHandler(CompraNotFoundException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.NOT_FOUND)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerNotFound(e.getMessage());
     }
 
     @ExceptionHandler(AuthenticationException.class)
     private ResponseEntity<RestErrorMessageDTO> authenticationExceptionHandler(AuthenticationException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.NOT_FOUND)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerNotFound(e.getMessage());
     }
 
     @ExceptionHandler(DisabledException.class)
     private ResponseEntity<RestErrorMessageDTO> disabledExceptionHandler(DisabledException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerBadRequest(e.getMessage());
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     private ResponseEntity<RestErrorMessageDTO> usernameNotFoundExceptionHandler(UsernameNotFoundException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerBadRequest(e.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     private ResponseEntity<RestErrorMessageDTO> badCredentialsExceptionHandler() {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .messages(List.of("Credenciais Invalidas"))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerBadRequest("Credenciais Invalidas");
     }
     @ExceptionHandler(ExistingUsernameException.class)
     private ResponseEntity<RestErrorMessageDTO> existingUsernameExceptionHandler(ExistingUsernameException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerBadRequest(e.getMessage());
     }
 
     @ExceptionHandler(ClienteNotFoundException.class)
     private ResponseEntity<RestErrorMessageDTO> clienteNotFoundExceptionHandler(ClienteNotFoundException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerBadRequest(e.getMessage());
     }
 
     @ExceptionHandler(ClienteExistenteException.class)
     private ResponseEntity<RestErrorMessageDTO> clienteExistenteExceptionHandler(ClienteExistenteException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.BAD_REQUEST)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerBadRequest(e.getMessage());
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     private ResponseEntity<RestErrorMessageDTO> unauthorizedExceptionHandler(ClienteNotFoundException e) {
-        RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.UNAUTHORIZED)
-                .messages(List.of(e.getMessage()))
-                .build();
-        return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
+        return handlerUnauthorized(e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     private ResponseEntity<RestErrorMessageDTO> runtimeExceptionHanlder(RuntimeException e) {
+        return handlerInternalServerError(e.getMessage());
+    }
+
+    private ResponseEntity<RestErrorMessageDTO> handlerBadRequest(String mensagem) {
+        return handlerExceptionsGenericas(List.of(mensagem), HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<RestErrorMessageDTO> handlerBadRequest(List<String> mensagens) {
+        return handlerExceptionsGenericas(mensagens, HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<RestErrorMessageDTO> handlerNotFound(String mensagem) {
+        return handlerExceptionsGenericas(List.of(mensagem), HttpStatus.NOT_FOUND);
+    }
+
+    private ResponseEntity<RestErrorMessageDTO> handlerUnauthorized(String mensagem) {
+        return handlerExceptionsGenericas(List.of(mensagem), HttpStatus.UNAUTHORIZED);
+    }
+
+    private ResponseEntity<RestErrorMessageDTO> handlerInternalServerError(String mensagem) {
+        return handlerExceptionsGenericas(List.of(mensagem), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ResponseEntity<RestErrorMessageDTO> handlerExceptionsGenericas(List<String> mensagens, HttpStatus status) {
         RestErrorMessageDTO restErrorMessageDTO = RestErrorMessageDTO.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .messages(List.of(e.getMessage()))
+                .status(status)
+                .messages(mensagens)
                 .build();
         return ResponseEntity.status(restErrorMessageDTO.getStatus()).body(restErrorMessageDTO);
     }
