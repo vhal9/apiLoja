@@ -22,7 +22,7 @@ public class CompraController {
 
     @GetMapping("{id}")
     public ResponseEntity<CompraDTO> buscarCompra(@PathVariable(value = "id") UUID idCompra) throws Exception {
-        return new ResponseEntity<>(compraService.buscarCompra(idCompra), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(compraService.buscarCompra(idCompra), HttpStatus.OK);
     }
 
     @PostMapping
