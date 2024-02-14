@@ -26,7 +26,7 @@ public class ClienteController {
     public ResponseEntity<ClienteDTO> inserirCliente(@Valid @RequestBody ClienteDTO novoCliente) {
         try {
             logger.info("Inserindo Cliente: " + novoCliente);
-            return new ResponseEntity(clienteService.inserirCliente(novoCliente), HttpStatus.ACCEPTED);
+            return new ResponseEntity(clienteService.inserirCliente(novoCliente), HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error("Erro executando inserirCliente: " + novoCliente, e);
             throw e;
