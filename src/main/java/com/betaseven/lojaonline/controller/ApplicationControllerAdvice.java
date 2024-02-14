@@ -67,6 +67,11 @@ public class ApplicationControllerAdvice {
         return handlerBadRequest(e.getMessage());
     }
 
+    @ExceptionHandler(ProdutoExistenteException.class)
+    private ResponseEntity<RestErrorMessageDTO> produtoExistenteExceptionHandler(ProdutoExistenteException e) {
+        return handlerBadRequest(e.getMessage());
+    }
+
     @ExceptionHandler(UnauthorizedException.class)
     private ResponseEntity<RestErrorMessageDTO> unauthorizedExceptionHandler(ClienteNotFoundException e) {
         return handlerUnauthorized(e.getMessage());
