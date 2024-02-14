@@ -112,8 +112,7 @@ public class CompraServiceImpl implements CompraService {
                 throw new UnauthorizedException();
             }
             // todo: validar itens de compra
-            Cliente cliente = clienteService.buscarCliente(compraDTO.getIdCliente())
-                    .orElseThrow(() -> new ClienteNotFoundException());
+            Cliente cliente = clienteService.buscarCliente(compraDTO.getIdCliente());
 
             Compra compra = new Compra();
             compra.setCliente(cliente);

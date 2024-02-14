@@ -1,6 +1,7 @@
 package com.betaseven.lojaonline.service.impl;
 
 import com.betaseven.lojaonline.Exceptions.ClienteExistenteException;
+import com.betaseven.lojaonline.Exceptions.ClienteNotFoundException;
 import com.betaseven.lojaonline.domain.dtos.ClienteDTO;
 import com.betaseven.lojaonline.domain.mappers.ClienteDTOMapper;
 import com.betaseven.lojaonline.domain.mappers.ClienteMapper;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -30,13 +32,33 @@ public class ClienteServiceImpl implements ClienteService {
     private final ClienteMapper clienteMapper;
 
     @Override
-    public Optional<Cliente> buscarCliente(UUID idCliente) {
+    public Cliente buscarCliente(UUID idCliente) {
         try {
-            return clienteRepository.findById(idCliente);
+            Optional<Cliente> clienteOptional =  clienteRepository.findById(idCliente);
+            if (clienteOptional.isEmpty()) {
+                throw new ClienteNotFoundException();
+            }
+            return clienteOptional.get();
         } catch (Exception e) {
             logger.error("Erro executando buscarCliente: " + idCliente, e);
             throw e;
         }
+    }
+
+    @Override
+    public ClienteDTO buscarClienteDTO(UUID idCliente) {
+        try {
+            return clienteDTOMapper.execute(buscarCliente(idCliente));
+        } catch (Exception e) {
+            logger.error("Erro executando buscarClienteDTO: " + idCliente, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public List<ClienteDTO> buscarClientesDTOPorNomeFantasia(String nomeFantasia) {
+        return clienteRepository.findClienteByNomeFantasia(nomeFantasia)
+                .stream().map(clienteDTOMapper::execute).collect(Collectors.toList());
     }
 
     @Override
